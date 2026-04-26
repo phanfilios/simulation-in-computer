@@ -1,0 +1,36 @@
+!define PRODUCT_NAME "SCSC Quantum Security"
+!define PRODUCT_VERSION "1.0.0"
+!define PRODUCT_PUBLISHER "SCSC Team"
+
+; Página de bienvenida personalizada
+!insertmacro MUI_PAGE_WELCOME
+
+; Página de licencia
+!insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
+
+; Directorio de instalación
+!insertmacro MUI_PAGE_DIRECTORY
+
+; Página de componentes
+!insertmacro MUI_PAGE_COMPONENTS
+
+; Página de instalación
+!insertmacro MUI_PAGE_INSTFILES
+
+; Página de finalización
+!insertmacro MUI_PAGE_FINISH
+
+; Secciones de instalación
+Section "Aplicación Principal" SecMain
+    SetOutPath "$INSTDIR"
+    File /r "..\dist\win-unpacked\*.*"
+    
+    ; Crear accesos directos
+    CreateDirectory "$SMPROGRAMS\SCSC"
+    CreateShortCut "$SMPROGRAMS\SCSC\SCSC Quantum Security.lnk" "$INSTDIR\SCSC Quantum Security.exe"
+    CreateShortCut "$DESKTOP\SCSC Quantum Security.lnk" "$INSTDIR\SCSC Quantum Security.exe"
+SectionEnd
+
+Section "Crear accesos directos" SecShortcuts
+    ; Accesos directos adicionales
+SectionEnd
