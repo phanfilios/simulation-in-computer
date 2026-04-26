@@ -377,12 +377,11 @@ npm install
 
 # 4. Ejecutar
 npm run dev
-¿Ya funcionó? ¿Qué ves ahora? 🔧
-
-
-<img width="1896" height="981" alt="image" src="https://github.com/user-attachments/assets/79b5868e-0ee7-4f3e-8d49-f298a719e528" />
 
 
 
+# <img width="1896" height="981" alt="image" src="https://github.com/user-attachments/assets/79b5868e-0ee7-4f3e-8d49-f298a719e528" />
 
-## 🏗️ Arquitectura del Sistema
+
+
+
