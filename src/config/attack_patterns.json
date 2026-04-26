@@ -1,0 +1,44 @@
+{
+  "attack_patterns": [
+    {
+      "id": "brute_force_001",
+      "name": "Quantum Brute Force",
+      "description": "Intento de fuerza bruta sobre claves post-cuánticas",
+      "severity": "high",
+      "detection_rate": 0.95,
+      "response": "block_ip"
+    },
+    {
+      "id": "mitm_quantum_002",
+      "name": "MITM Cuántico",
+      "description": "Ataque de intermediario en canal cuántico",
+      "severity": "critical",
+      "detection_rate": 0.98,
+      "response": "quantum_reset"
+    },
+    {
+      "id": "ddos_003",
+      "name": "DDoS Cuántico",
+      "description": "Saturación de solicitudes cuánticas",
+      "severity": "medium",
+      "detection_rate": 0.85,
+      "response": "rate_limit"
+    },
+    {
+      "id": "qubit_injection_004",
+      "name": "Inyección de Qubits",
+      "description": "Inyección de qubits maliciosos en el circuito",
+      "severity": "critical",
+      "detection_rate": 0.92,
+      "response": "circuit_reject"
+    },
+    {
+      "id": "eavesdropping_005",
+      "name": "Escucha Cuántica",
+      "description": "Intento de interceptación de clave cuántica",
+      "severity": "high",
+      "detection_rate": 0.99,
+      "response": "qkd_reset"
+    }
+  ]
+}

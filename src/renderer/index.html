@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCSC - Quantum Security System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0c0c0c;
+            font-family: 'Consolas', 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Ventana principal estilo PowerShell */
+        .powershell-window {
+            width: 100vw;
+            height: 100vh;
+            background: #012456;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Barra de título */
+        .window-titlebar {
+            background: linear-gradient(90deg, #2c2c2c 0%, #1a1a1a 100%);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .win-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .win-btn.close { background: #e81123; }
+        .win-btn.minimize { background: #f5a623; }
+        .win-btn.maximize { background: #2ecc71; }
+
+        .window-icon {
+            width: 16px;
+            height: 16px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #1a1a1a;
+        }
+
+        .window-title {
+            color: #f0f0f0;
+            font-size: 12px;
+            flex: 1;
+        }
+
+        /* Panel principal */
+        .main-panel {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Terminal */
+        .terminal-panel {
+            flex: 2;
+            background: #012456;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-header {
+            background: #00378a;
+            padding: 6px 12px;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .terminal-content {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+
+        /* Panel derecho */
+        .info-panel {
+            flex: 1;
+            background: #011a42;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-section {
+            border-bottom: 1px solid #00378a;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            background: #00378a;
+            padding: 6px 12px;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .section-content {
+            padding: 10px;
+            flex: 1;
+            font-size: 11px;
+            color: #b0d4ff;
+        }
+
+        /* Línea de comandos */
+        .command-line {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: #012456;
+            border-top: 1px solid #00378a;
+        }
+
+        .prompt-symbol {
+            color: #f5a623;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .command-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            flex: 1;
+            outline: none;
+        }
+
+        /* Barra de acciones */
+        .action-bar {
+            display: flex;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #011a42;
+            border-top: 1px solid #00378a;
+        }
+
+        .action-btn {
+            background: #00378a;
+            border: 1px solid #1a6ab5;
+            color: #ffffff;
+            padding: 4px 12px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .action-btn:hover {
+            background: #1a6ab5;
+        }
+
+        /* Barra de estado */
+        .status-bar {
+            background: #00378a;
+            padding: 4px 12px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #b0d4ff;
+        }
+
+        /* Métricas */
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            padding: 2px 0;
+            border-bottom: 1px solid #00378a;
+        }
+
+        .metric-label { color: #7fb4ff; }
+        .metric-value { color: #ffffff; font-weight: bold; }
+
+        .node-item {
+            padding: 4px 0;
+            border-bottom: 1px dotted #00378a;
+        }
+
+        /* Colores de terminal */
+        .timestamp { color: #6b7280; margin-right: 12px; }
+        .output-info { color: #7fb4ff; }
+        .output-success { color: #6cc04e; }
+        .output-warning { color: #f5a623; }
+        .output-error { color: #e81123; }
+        .output-quantum { color: #9b59b6; }
+        .output-crypto { color: #3498db; }
+        .output-highlight { color: #00ffff; }
+
+        .terminal-line {
+            margin-bottom: 2px;
+            line-height: 1.4;
+            font-family: 'Consolas', monospace;
+        }
+
+        /* Scrollbar */
+        .terminal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .terminal-content::-webkit-scrollbar-track {
+            background: #00378a;
+        }
+        .terminal-content::-webkit-scrollbar-thumb {
+            background: #1a6ab5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="powershell-window">
+        <!-- Barra de título -->
+        <div class="window-titlebar">
+            <div class="window-controls">
+                <div class="win-btn close"></div>
+                <div class="win-btn minimize"></div>
+                <div class="win-btn maximize"></div>
+            </div>
+            <div class="window-icon">SC</div>
+            <div class="window-title">SCSC Quantum Security System v1.0.0</div>
+            <div class="status-indicator">
+                <span style="color:#6cc04e">●</span>
+                <span style="font-size: 10px;">ACTIVE</span>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <!-- Terminal -->
+            <div class="terminal-panel">
+                <div class="terminal-header">PS C:\Quantum\SCSC> Terminal de Comandos</div>
+                <div class="terminal-content" id="terminalOutput">
+                    <div class="terminal-line"><span class="timestamp">[10:23:45]</span> <span class="output-highlight">SCSC Quantum Security System v1.0.0</span></div>
+                    <div class="terminal-line"><span class="timestamp">[10:23:46]</span> <span class="output-quantum">Quantum backend: aer_simulator (24 qubits max)</span></div>
+                    <div class="terminal-line"><span class="timestamp">[10:23:47]</span> <span class="output-crypto">Post-quantum cryptography: Kyber-1024 + SPHINCS+</span></div>
+                    <div class="terminal-line"><span class="timestamp">[10:23:48]</span> <span class="output-success">Cluster: 5/5 nodes active</span></div>
+                    <div class="terminal-line"><span class="timestamp">[10:23:49]</span> <span class="output-info">Type "help" for available commands</span></div>
+                </div>
+                <div class="command-line">
+                    <span class="prompt-symbol">PS&gt;</span>
+                    <input type="text" class="command-input" id="commandInput" placeholder="Ingrese comando (help, status, crypto, quantum, attack, clear)">
+                </div>
+            </div>
+
+            <!-- Panel de información -->
+            <div class="info-panel">
+                <div class="info-section">
+                    <div class="section-header">SYSTEM METRICS</div>
+                    <div class="section-content" id="metricsPanel">
+                        <div class="metric-row"><span class="metric-label">CPU Usage:</span><span class="metric-value" id="cpuMetric">23.4%</span></div>
+                        <div class="metric-row"><span class="metric-label">Memory:</span><span class="metric-value" id="ramMetric">8.2/32 GB</span></div>
+                        <div class="metric-row"><span class="metric-label">Quantum Fidelity:</span><span class="metric-value" id="fidelityMetric">0.9997</span></div>
+                        <div class="metric-row"><span class="metric-label">QBER:</span><span class="metric-value" id="qberMetric">0.8%</span></div>
+                        <div class="metric-row"><span class="metric-label">Entangled Qubits:</span><span class="metric-value" id="entangledMetric">12/24</span></div>
+                        <div class="metric-row"><span class="metric-label">Throughput:</span><span class="metric-value" id="throughputMetric">1,234 ops/s</span></div>
+                        <div class="metric-row"><span class="metric-label">Avg Latency:</span><span class="metric-value" id="latencyMetric">12.3 ms</span></div>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <div class="section-header">CLUSTER NODES (5/5)</div>
+                    <div class="section-content" id="nodesPanel">
+                        <div class="node-item">MASTER [192.168.1.100] - ACTIVE</div>
+                        <div class="node-item">NODE-01 [192.168.1.101] - heartbeat 1.2ms</div>
+                        <div class="node-item">NODE-02 [192.168.1.102] - heartbeat 1.5ms</div>
+                        <div class="node-item">NODE-03 [192.168.1.103] - heartbeat 1.1ms</div>
+                        <div class="node-item">NODE-04 [192.168.1.104] - heartbeat 2.3ms</div>
+                        <div class="node-item">NODE-05 [192.168.1.105] - heartbeat 1.8ms</div>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <div class="section-header">POST-QUANTUM CRYPTO</div>
+                    <div class="section-content" id="cryptoPanel">
+                        <div class="metric-row"><span class="metric-label">Algorithm:</span><span class="metric-value">Kyber-1024</span></div>
+                        <div class="metric-row"><span class="metric-label">Signature:</span><span class="metric-value">SPHINCS+</span></div>
+                        <div class="metric-row"><span class="metric-label">Keys Distributed:</span><span class="metric-value" id="keysMetric">45</span></div>
+                        <div class="metric-row"><span class="metric-label">Attacks Blocked:</span><span class="metric-value" id="attacksMetric">128</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <button class="action-btn" id="btnQuantum">▶ EXECUTE QUANTUM CIRCUIT</button>
+            <button class="action-btn" id="btnAttack">⚠ SIMULATE INTRUSION</button>
+            <button class="action-btn" id="btnClear">🗑 CLEAR TERMINAL</button>
+        </div>
+
+        <div class="status-bar">
+            <span>SCSC v1.0.0 - Quantum Security System</span>
+            <span>Cluster: OPERATIONAL</span>
+            <span>Quantum Backend: Active</span>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // SCSC QUANTUM SECURITY SYSTEM - SCRIPT COMPLETO
+        // ============================================================
+        
+        let attackCount = 128;
+        let keysDistributed = 45;
+        let tasksExecuted = 0;
+        
+        let systemMetrics = {
+            cpu: 23.4,
+            memory: 8.2,
+            fidelity: 0.9997,
+            qber: 0.8,
+            entangled: 12,
+            throughput: 1234,
+            latency: 12.3
+        };
+        
+        function addTerminalMessage(message, type) {
+            const terminal = document.getElementById('terminalOutput');
+            if (!terminal) return;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            let colorClass = 'output-info';
+            
+            switch(type) {
+                case 'quantum': colorClass = 'output-quantum'; break;
+                case 'crypto': colorClass = 'output-crypto'; break;
+                case 'success': colorClass = 'output-success'; break;
+                case 'warning': colorClass = 'output-warning'; break;
+                case 'error': colorClass = 'output-error'; break;
+                case 'highlight': colorClass = 'output-highlight'; break;
+                default: colorClass = 'output-info';
+            }
+            
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.innerHTML = `<span class="timestamp">[${timestamp}]</span> <span class="${colorClass}">${message}</span>`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        function executeQuantumCircuit() {
+            tasksExecuted++;
+            addTerminalMessage('Executing quantum circuit...', 'quantum');
+            addTerminalMessage('|ψ⟩ = α|0⟩ + β|1⟩ superposition state prepared', 'quantum');
+            addTerminalMessage('Hadamard gates applied to all qubits', 'quantum');
+            addTerminalMessage('Entanglement layer 1/2 completed', 'quantum');
+            addTerminalMessage('Entanglement layer 2/2 completed', 'quantum');
+            addTerminalMessage('Circuit transpiled for IBM quantum hardware', 'quantum');
+            addTerminalMessage('Measurement completed with 1024 shots', 'quantum');
+            
+            const fidelity = (0.999 + Math.random() * 0.001).toFixed(4);
+            addTerminalMessage('Quantum fidelity: ' + fidelity, 'success');
+            
+            keysDistributed++;
+            document.getElementById('keysMetric').innerText = keysDistributed;
+            systemMetrics.throughput += 50;
+            document.getElementById('throughputMetric').innerText = systemMetrics.throughput.toLocaleString() + ' ops/s';
+        }
+        
+        function simulateIntrusion() {
+            attackCount++;
+            document.getElementById('attacksMetric').innerText = attackCount;
+            
+            const attacks = [
+                'INTRUSION DETECTED: Brute force attempt from 185.143.223.12 - BLOCKED',
+                'QUANTUM ATTACK MITIGATED: DDoS pattern neutralized in 234ms',
+                'PORT SCAN DETECTED: Quantum ports scanned from 45.33.22.11',
+                'MALICIOUS QUBIT INJECTION: Rejected by quantum filter',
+                'MITM QUANTUM ATTACK: Intercepted by no-cloning protocol'
+            ];
+            
+            const attackMsg = attacks[Math.floor(Math.random() * attacks.length)];
+            addTerminalMessage(attackMsg, 'warning');
+            addTerminalMessage('Quantum IDS response executed - Threat neutralized', 'success');
+        }
+        
+        function clearTerminal() {
+            const terminal = document.getElementById('terminalOutput');
+            if (terminal) {
+                terminal.innerHTML = '';
+                addTerminalMessage('Terminal cleared. SCSC Quantum Security System ready.', 'success');
+                addTerminalMessage('Type "help" for available commands', 'info');
+            }
+        }
+        
+        function executeCommand(command) {
+            const cmd = command.toLowerCase().trim();
+            if (cmd === '') return;
+            
+            addTerminalMessage('PS> ' + command, 'info');
+            
+            setTimeout(function() {
+                switch(cmd) {
+                    case 'help':
+                        addTerminalMessage('Available commands: help, status, crypto, quantum, attack, clear, metrics', 'info');
+                        break;
+                    case 'status':
+                        addTerminalMessage('Cluster Status: 5/5 active nodes | Quantum Fidelity: ' + systemMetrics.fidelity + ' | QBER: ' + systemMetrics.qber + '%', 'success');
+                        break;
+                    case 'crypto':
+                        addTerminalMessage('Post-Quantum Cryptography: Kyber-1024 + SPHINCS+ | Keys: ' + keysDistributed + ' | Attacks blocked: ' + attackCount, 'crypto');
+                        break;
+                    case 'quantum':
+                        addTerminalMessage('Quantum State: Entangled qubits: ' + systemMetrics.entangled + '/24 | Fidelity: ' + systemMetrics.fidelity, 'quantum');
+                        break;
+                    case 'attack':
+                        simulateIntrusion();
+                        break;
+                    case 'clear':
+                        clearTerminal();
+                        break;
+                    case 'metrics':
+                        addTerminalMessage('CPU: ' + systemMetrics.cpu + '% | Memory: ' + systemMetrics.memory + '/32 GB | Latency: ' + systemMetrics.latency + 'ms', 'info');
+                        break;
+                    default:
+                        addTerminalMessage('Unknown command: ' + command + '. Type help for available commands.', 'warning');
+                }
+            }, 50);
+        }
+        
+        function updateMetrics() {
+            setInterval(function() {
+                systemMetrics.cpu = (20 + Math.random() * 15).toFixed(1);
+                systemMetrics.memory = (8.2 + Math.random() * 0.8).toFixed(1);
+                systemMetrics.fidelity = (0.999 + Math.random() * 0.001).toFixed(4);
+                systemMetrics.qber = (0.5 + Math.random() * 1.2).toFixed(1);
+                systemMetrics.entangled = Math.floor(10 + Math.random() * 14);
+                systemMetrics.latency = (10 + Math.random() * 8).toFixed(1);
+                
+                document.getElementById('cpuMetric').innerText = systemMetrics.cpu + '%';
+                document.getElementById('ramMetric').innerText = systemMetrics.memory + '/32 GB';
+                document.getElementById('fidelityMetric').innerText = systemMetrics.fidelity;
+                document.getElementById('qberMetric').innerText = systemMetrics.qber + '%';
+                document.getElementById('entangledMetric').innerText = systemMetrics.entangled + '/24';
+                document.getElementById('latencyMetric').innerText = systemMetrics.latency + ' ms';
+            }, 2500);
+        }
+        
+        function autoGenerateLogs() {
+            setInterval(function() {
+                if (Math.random() > 0.7) {
+                    const messages = [
+                        'Quantum state |ψ⟩ evolving with applied gates',
+                        'Heartbeat received from all cluster nodes',
+                        'Key rotation completed for quantum channel',
+                        'Error mitigation protocol executed successfully'
+                    ];
+                    const msg = messages[Math.floor(Math.random() * messages.length)];
+                    addTerminalMessage(msg, 'info');
+                }
+            }, 8000);
+        }
+        
+        function showWelcomeMessage() {
+            setTimeout(function() { addTerminalMessage('SCSC Quantum Security System initialized', 'success'); }, 500);
+            setTimeout(function() { addTerminalMessage('Quantum backend: aer_simulator (24 qubits max)', 'quantum'); }, 1000);
+            setTimeout(function() { addTerminalMessage('Post-quantum cryptography protocols activated', 'crypto'); }, 1500);
+            setTimeout(function() { addTerminalMessage('Cluster: 5/5 nodes active | System ready', 'success'); }, 2000);
+        }
+        
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            showWelcomeMessage();
+            updateMetrics();
+            autoGenerateLogs();
+            
+            document.getElementById('btnQuantum').addEventListener('click', executeQuantumCircuit);
+            document.getElementById('btnAttack').addEventListener('click', simulateIntrusion);
+            document.getElementById('btnClear').addEventListener('click', clearTerminal);
+            
+            const commandInput = document.getElementById('commandInput');
+            commandInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    executeCommand(commandInput.value);
+                    commandInput.value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

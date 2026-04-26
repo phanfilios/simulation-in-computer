@@ -1,0 +1,279 @@
+{
+  "system": {
+    "name": "SCSC Quantum Security System",
+    "version": "1.0.0",
+    "environment": "production",
+    "autoSave": true,
+    "autoSaveInterval": 30000,
+    "maxLogEntries": 1000,
+    "theme": "dark"
+  },
+  "quantum": {
+    "backend": "aer_simulator",
+    "maxQubits": 24,
+    "shots": 1024,
+    "entanglementLayers": 2,
+    "optimizationLevel": 3,
+    "transpilerMethod": "basic",
+    "fidelityThreshold": 0.95,
+    "qberThreshold": 3.0,
+    "defaultCircuit": {
+      "type": "variational",
+      "depth": 4,
+      "gates": ["ry", "rz", "cx"]
+    },
+    "simulation": {
+      "method": "statevector",
+      "precision": "double",
+      "useGPU": false,
+      "parallelShots": true,
+      "seed": null
+    },
+    "errorMitigation": {
+      "enabled": true,
+      "method": "readout_error",
+      "numCalibrations": 10
+    }
+  },
+  "cluster": {
+    "masterNode": {
+      "host": "192.168.1.100",
+      "port": 8080,
+      "apiPort": 8081
+    },
+    "workerNodes": [
+      {
+        "id": "node_1",
+        "host": "192.168.1.101",
+        "port": 9090,
+        "status": "active",
+        "capabilities": {
+          "maxQubits": 20,
+          "memoryGB": 16,
+          "cpuCores": 8
+        }
+      },
+      {
+        "id": "node_2",
+        "host": "192.168.1.102",
+        "port": 9090,
+        "status": "active",
+        "capabilities": {
+          "maxQubits": 20,
+          "memoryGB": 16,
+          "cpuCores": 8
+        }
+      },
+      {
+        "id": "node_3",
+        "host": "192.168.1.103",
+        "port": 9090,
+        "status": "active",
+        "capabilities": {
+          "maxQubits": 20,
+          "memoryGB": 16,
+          "cpuCores": 8
+        }
+      },
+      {
+        "id": "node_4",
+        "host": "192.168.1.104",
+        "port": 9090,
+        "status": "active",
+        "capabilities": {
+          "maxQubits": 20,
+          "memoryGB": 16,
+          "cpuCores": 8
+        }
+      },
+      {
+        "id": "node_5",
+        "host": "192.168.1.105",
+        "port": 9090,
+        "status": "active",
+        "capabilities": {
+          "maxQubits": 20,
+          "memoryGB": 16,
+          "cpuCores": 8
+        }
+      }
+    ],
+    "heartbeatInterval": 5000,
+    "nodeTimeout": 15000,
+    "maxRetries": 3,
+    "loadBalancing": "round_robin",
+    "autoRecovery": true
+  },
+  "crypto": {
+    "postQuantum": {
+      "keyExchange": "kyber-1024",
+      "signature": "sphincs+",
+      "encryption": "aes-256-gcm",
+      "hashFunction": "sha-384",
+      "latticeDimension": 1024,
+      "modulus": 3329
+    },
+    "qkd": {
+      "protocol": "bb84",
+      "simulated": true,
+      "efficiency": 0.5,
+      "qberThreshold": 3.0,
+      "keyLength": 256,
+      "basis": ["rectilinear", "diagonal"]
+    },
+    "keys": {
+      "rotationInterval": 86400,
+      "keyLength": 256,
+      "storagePath": "./keys",
+      "encryptedStorage": true
+    }
+  },
+  "network": {
+    "simulation": {
+      "enabled": true,
+      "bandwidthMbps": 1000,
+      "latencyMs": 5,
+      "packetLoss": 0.001,
+      "jitterMs": 1
+    },
+    "security": {
+      "tlsEnabled": true,
+      "certificateValidation": true,
+      "allowedIPs": [
+        "192.168.1.0/24",
+        "127.0.0.1"
+      ],
+      "rateLimit": 1000,
+      "ddosProtection": true
+    },
+    "ports": {
+      "master": 8080,
+      "api": 8081,
+      "nodes": 9090,
+      "monitoring": 9091
+    }
+  },
+  "monitoring": {
+    "metrics": {
+      "cpu": true,
+      "memory": true,
+      "network": true,
+      "quantum": true,
+      "crypto": true
+    },
+    "alerts": {
+      "enabled": true,
+      "cpuThreshold": 80,
+      "memoryThreshold": 85,
+      "latencyThreshold": 50,
+      "qberThreshold": 3.0,
+      "fidelityThreshold": 0.95
+    },
+    "logging": {
+      "level": "info",
+      "consoleOutput": true,
+      "fileOutput": true,
+      "logPath": "./logs",
+      "maxFileSizeMB": 10,
+      "maxFiles": 5,
+      "logFormat": "json"
+    },
+    "visualization": {
+      "refreshInterval": 2000,
+      "maxDataPoints": 100,
+      "chartType": "line",
+      "colorScheme": "quantum"
+    }
+  },
+  "security": {
+    "ids": {
+      "enabled": true,
+      "signatureBased": true,
+      "anomalyBased": true,
+      "sensitivity": "medium",
+      "blacklistedIPs": [
+        "185.143.223.0/24",
+        "45.33.22.0/24"
+      ],
+      "attackPatterns": [
+        "brute_force",
+        "mitm_quantum",
+        "ddos",
+        "port_scan",
+        "qubit_injection"
+      ]
+    },
+    "firewall": {
+      "enabled": true,
+      "defaultPolicy": "deny",
+      "allowedServices": ["quantum", "crypto", "monitoring"]
+    },
+    "authentication": {
+      "method": "token",
+      "tokenExpiry": 3600,
+      "rateLimit": 100
+    }
+  },
+  "storage": {
+    "database": {
+      "type": "sqlite",
+      "path": "./data/scsc.db",
+      "backupInterval": 3600,
+      "maxBackups": 24
+    },
+    "cache": {
+      "enabled": true,
+      "type": "memory",
+      "maxSizeMB": 100,
+      "ttlSeconds": 300
+    },
+    "export": {
+      "formats": ["json", "csv", "txt"],
+      "defaultPath": "./exports"
+    }
+  },
+  "ui": {
+    "terminal": {
+      "fontSize": 12,
+      "fontFamily": "Consolas, Courier New, monospace",
+      "maxLines": 1000,
+      "colorScheme": "powershell",
+      "showTimestamps": true,
+      "autoScroll": true
+    },
+    "dashboard": {
+      "refreshRate": 2000,
+      "showGrid": true,
+      "compactMode": false
+    },
+    "animations": {
+      "enabled": true,
+      "speed": "normal",
+      "reducedMotion": false
+    }
+  },
+  "simulation": {
+    "scenarios": {
+      "default": {
+        "name": "Normal Operation",
+        "attackFrequency": 0.1,
+        "quantumLoad": 0.5,
+        "duration": 0
+      },
+      "high_security": {
+        "name": "High Security Mode",
+        "attackFrequency": 0.3,
+        "quantumLoad": 0.8,
+        "duration": 0
+      },
+      "stress_test": {
+        "name": "Stress Test",
+        "attackFrequency": 0.8,
+        "quantumLoad": 1.0,
+        "duration": 300
+      }
+    },
+    "randomSeed": null,
+    "deterministicMode": false
+  }
+}

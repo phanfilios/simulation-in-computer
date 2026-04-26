@@ -1,0 +1,47 @@
+{
+  "circuits": {
+    "bell_state": {
+      "name": "Estado de Bell",
+      "description": "Genera estado entrelazado |Φ+⟩",
+      "qubits": 2,
+      "gates": [
+        {"type": "h", "target": 0},
+        {"type": "cx", "control": 0, "target": 1}
+      ]
+    },
+    "ghz_state": {
+      "name": "Estado GHZ",
+      "description": "Estado de Greenberger-Horne-Zeilinger",
+      "qubits": 3,
+      "gates": [
+        {"type": "h", "target": 0},
+        {"type": "cx", "control": 0, "target": 1},
+        {"type": "cx", "control": 0, "target": 2}
+      ]
+    },
+    "qkd_bb84": {
+      "name": "QKD BB84",
+      "description": "Simulación de protocolo BB84",
+      "qubits": 4,
+      "gates": [
+        {"type": "h", "target": 0},
+        {"type": "h", "target": 1},
+        {"type": "cx", "control": 0, "target": 2},
+        {"type": "cx", "control": 1, "target": 3}
+      ]
+    },
+    "variational_ansatz": {
+      "name": "Ansatz Variacional",
+      "description": "Circuito parametrizado para VQE",
+      "qubits": 4,
+      "gates": [
+        {"type": "ry", "target": 0, "parameter": true},
+        {"type": "ry", "target": 1, "parameter": true},
+        {"type": "cx", "control": 0, "target": 1},
+        {"type": "ry", "target": 2, "parameter": true},
+        {"type": "ry", "target": 3, "parameter": true},
+        {"type": "cx", "control": 2, "target": 3}
+      ]
+    }
+  }
+}
