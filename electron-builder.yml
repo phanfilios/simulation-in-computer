@@ -1,0 +1,46 @@
+# Electron Builder Configuration for SCSC Quantum Security
+
+appId: com.scsc.quantum.security
+productName: SCSC Quantum Security
+copyright: Copyright © 2024 SCSC Team
+
+directories:
+  output: dist
+  buildResources: build
+
+files:
+  - src/**/*
+  - node_modules/**/*
+
+# Windows Configuration
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+  artifactName: SCSC_Quantum_Setup_${version}.${ext}
+
+# NSIS Installer Configuration
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: SCSC Quantum Security
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  license: LICENSE.txt
+
+# Portable version
+portable:
+  artifactName: SCSC_Quantum_Portable_${version}.${ext}
+
+# Compression
+compression: normal
+
+# Publishing (optional - for auto-updates)
+# publish:
+#   - provider: github
+#     owner: scsc
+#     repo: quantum-security
