@@ -1,7 +1,53 @@
 {
+  "name": "scsc-quantum-security",
+  "version": "1.0.0",
+  "description": "Sistema de Ciberseguridad Cuántica - SCSC",
+  "author": "SCSC Team",
+  "license": "MIT",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win --x64",
+    "build:portable": "electron-builder --win portable",
+    "dist": "npm run build:win",
+    "postinstall": "electron-builder install-app-deps"
+  },
   "dependencies": {
-    "crypto-js": "^4.2.0",
-    "mathjs": "^15.2.0",
-    "uuid": "^14.0.0"
+    "electron-updater": "^6.1.7"
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.scsc.quantum.security",
+    "productName": "SCSC Quantum Security",
+    "copyright": "Copyright © 2024 SCSC Team",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "SCSC Quantum Security"
+    }
   }
 }
